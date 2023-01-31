@@ -200,8 +200,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun initButtonSaveDataDatabase() {
-        val editTextTitle = binding.edtTextTitle.text.toString()
-        val tvResult = binding.tvResult.text.toString()
+        val editTextTitle = binding.edtTextTitle.text.toString().trim()
+        val tvResult = binding.tvResult.text.toString().trim()
 
         // below line is used to get reference for our database.
         databaseReference = FirebaseDatabase.getInstance().getReference("Data")

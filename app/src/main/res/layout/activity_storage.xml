@@ -34,4 +34,18 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"/>
 
+    <TextView
+        android:id="@+id/tvTitleResult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Title"
+        android:padding="16dp"/>
+
+    <TextView
+        android:id="@+id/tvTextDataResult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="text"
+        android:padding="16dp"/>
+
 </LinearLayout>
