@@ -2,19 +2,23 @@ package org.meicode.textrecognition
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.SurfaceHolder
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.vision.CameraSource
 import com.google.android.gms.vision.Detector
 import com.google.android.gms.vision.text.TextBlock
 import com.google.android.gms.vision.text.TextRecognizer
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import org.meicode.textrecognition.databinding.ActivityMainBinding
+
 
 class MainActivity : AppCompatActivity() {
     private val MY_PERMISSIONS_REQUEST_CAMERA: Int = 101
@@ -23,16 +27,23 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mCameraSource: CameraSource
     private val tag: String? = "MainActivity"
 
+    private lateinit var databaseReference: DatabaseReference
+
     override fun onCreate(savedInstanceState : Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         createTextRecognizer()
-        iniCamera()
+        iniButtonCamera()
         surfaceCameraHolder()
         setTextRecognizer()
-
+        binding.btnGoDataStorage.setOnClickListener {
+            initButtonToStorage()
+        }
+        binding.btnSave.setOnClickListener {
+            initButtonSaveDataDatabase()
+        }
     }
 
     // create text recognizer
@@ -45,7 +56,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     //init camera
-    fun iniCamera(){
+    fun iniButtonCamera(){
         mCameraSource = CameraSource.Builder(applicationContext, textRecognizer)
             .setFacing(CameraSource.CAMERA_FACING_BACK)
             .setRequestedPreviewSize(1280, 1024)
@@ -70,7 +81,7 @@ class MainActivity : AppCompatActivity() {
                         requestForPermission()
                     }
                 } catch (e: Exception) {
-                    toast("Error" + e.message)
+                    Helper.toastText(applicationContext,"Error" + e.message)
                 }
             }
 
@@ -86,8 +97,13 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    private fun toast(text : String) {
-        Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+
+
+    private fun isCameraPermissionGranted() : Boolean {
+        return ContextCompat.checkSelfPermission(
+            this@MainActivity,
+            Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun requestForPermission() {
@@ -153,15 +169,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun isCameraPermissionGranted() : Boolean {
-        return ContextCompat.checkSelfPermission(
-            this@MainActivity,
-            Manifest.permission.CAMERA
-        ) == PackageManager.PERMISSION_GRANTED
-    }
-
     fun setTextRecognizer() {
         textRecognizer.setProcessor(object : Detector.Processor<TextBlock> {
+            var textTvResult = binding.tvResult
             override fun release() {}
 
             override fun receiveDetections(detections : Detector.Detections<TextBlock>) {
@@ -171,16 +181,46 @@ class MainActivity : AppCompatActivity() {
                     return
                 }
 
-                binding.tvResult.post {
+                textTvResult.post {
                     val stringBuilder = StringBuilder()
                     for (i in 0 until items.size()) {
                         val item = items.valueAt(i)
                         stringBuilder.append(item.value)
                         stringBuilder.append("\n")
                     }
-                    binding.tvResult.text = stringBuilder.toString()
+                    textTvResult.text = stringBuilder.toString()
                 }
             }
         })
+    }
+
+    fun initButtonToStorage(){
+        val intent = Intent(this, StorageActivity::class.java)
+        startActivity(intent)
+    }
+
+    fun initButtonSaveDataDatabase() {
+        val editTextTitle = binding.edtTextTitle.text.toString()
+        val tvResult = binding.tvResult.text.toString()
+
+        // below line is used to get reference for our database.
+        databaseReference = FirebaseDatabase.getInstance().getReference("Data")
+        val dataClass = DataClass(editTextTitle, tvResult)
+
+        if (editTextTitle.isEmpty()) {
+            Helper.toastText(this, "Please Fill The Edit Text")
+        } else {
+            //init save firebase
+            writeData(editTextTitle, dataClass)
+        }
+    }
+
+    private fun writeData(title: String, dataClass: DataClass) {
+        databaseReference.child(title).setValue(dataClass).addOnSuccessListener {
+            binding.edtTextTitle.text.clear()
+            Helper.toastText(this@MainActivity, "Succesful Saved")
+        }.addOnFailureListener {
+            Helper.toastText(applicationContext, "Failed Saved")
+        }
     }
 }

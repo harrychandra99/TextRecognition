@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Text Recognition</string>
+    <string name="masukan_data_title">Masukan Data Title</string>
+    <string name="read_data">Read Data</string>
 </resources>
