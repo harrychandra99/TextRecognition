@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "178633984843",
+    "project_id": "textrecognition-552e5",
+    "storage_bucket": "textrecognition-552e5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:178633984843:android:ef176a1ef146ce23eb36ce",
+        "android_client_info": {
+          "package_name": "org.meicode.textrecognition"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "178633984843-jjmpomcton2i25nfijo8nlv140cl6sln.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.meicode.textrecognition",
+            "certificate_hash": "29e2b2c2369a0b7c98351b6ff85b48e9d5a75775"
+          }
+        },
+        {
+          "client_id": "178633984843-5jr93gl7kh6ko320s0u04ovrqen45ldr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYwCQjEvwYoy6eox8-ke5wmgDB-rGg7t4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "178633984843-5jr93gl7kh6ko320s0u04ovrqen45ldr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
