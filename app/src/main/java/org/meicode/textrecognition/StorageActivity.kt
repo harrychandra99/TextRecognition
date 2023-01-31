@@ -30,11 +30,11 @@ class StorageActivity : AppCompatActivity() {
         databaseReference.child(title).get().addOnSuccessListener {
             if(it.exists()){
                 val dataTitle = it.child("dataTitle").value
-                val dataText = it.child("dataText").value
+                val dataResult = it.child("dataResult").value
                 Helper.toastText(this,"Successfull Read")
                 binding.edtTitle.text.clear()
                 binding.tvTitleResult.text = dataTitle.toString()
-                binding.tvTextDataResult.text = dataText.toString()
+                binding.tvTextDataResult.text = dataResult.toString()
             } else{
                 Helper.toastText(this,"Title Doesnt Exit")
             }
